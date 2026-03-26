@@ -107,6 +107,17 @@ class BasePlugin:
                                 + str(self.to_deg(d['wind_chill'])))
 
 
+    def get_radiation(self, device_id, d):
+        if d.get('solar_rad') is None:
+            return
+        UpdateDevice(device_id, 0, d['solar_rad'])
+
+    def get_uv(self, device_id, d):
+        for x in ['temp', 'uv_index']:
+            if d.get(x) is None:
+                return
+        UpdateDevice(device_id, 0, str(d['uv_index']) + ';' +  str(self.to_deg(d['temp'])))
+
     def onStart(self):
         Domoticz.Log("onstart")
 
@@ -122,6 +133,8 @@ class BasePlugin:
         self.devices = [
                 {'Name': 'Temperature', 'TypeName': 'Temp+Hum+Baro', 'data': 'get_temp_hum_bar'},  
                 {'Name': 'Vent', 'TypeName': 'Wind', 'SubTypeName': 'Wind+Temp+Chill ', 'data': 'get_wind'},  
+                {'Name': 'Radiations Solaire', 'TypeName': 'Solar Radiation', 'SubTypeName': 'Solar Radiation', 'data': 'get_radiation'},
+                {'Name': 'UV', 'TypeName': 'UV', 'data': 'get_uv'},
 
         ]
         Domoticz.Log(Devices)
