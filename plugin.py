@@ -118,6 +118,12 @@ class BasePlugin:
                 return
         UpdateDevice(device_id, 0, str(d['uv_index']) + ';' +  str(self.to_deg(d['temp'])))
 
+    def get_rain(self, device_id, d):
+        for x in ['rainfall_last_60_min_mm', 'rainfall_year_mm']:
+            if d.get(x) is None:
+                return
+        UpdateDevice(device_id, 0, str(d['rainfall_last_60_min_mm']*100) + ';' +  str(d['rainfall_year_mm']))
+
     def onStart(self):
         Domoticz.Log("onstart")
 
@@ -135,6 +141,7 @@ class BasePlugin:
                 {'Name': 'Vent', 'TypeName': 'Wind', 'SubTypeName': 'Wind+Temp+Chill ', 'data': 'get_wind'},  
                 {'Name': 'Radiations Solaire', 'TypeName': 'Solar Radiation', 'SubTypeName': 'Solar Radiation', 'data': 'get_radiation'},
                 {'Name': 'UV', 'TypeName': 'UV', 'data': 'get_uv'},
+                {'Name': 'Pluie', 'TypeName': 'Rain', 'data': 'get_rain'},
 
         ]
         Domoticz.Log(Devices)
